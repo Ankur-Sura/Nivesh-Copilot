@@ -186,7 +186,9 @@ const uri = process.env.MONGO_URL;
  * 📖 MongoDB connection string
  * 
  * Format: mongodb://localhost:27017/zerodha
- * OR: mongodb+srv://user:pass@cluster.mongodb.net/zerodha (Atlas)
+ * OR: mongodb+srv://username:password@cluster.mongodb.net/database (Atlas)
+ * 
+ * ⚠️ Never commit actual credentials! Use environment variables.
  */
 
 const AI_SERVICE_URL = process.env.AI_SERVICE_URL || "http://localhost:8000";
