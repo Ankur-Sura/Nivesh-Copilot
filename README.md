@@ -84,11 +84,10 @@ cd "Nivesh Copilot"
 
 ### 2. Set Up Environment Variables
 
-```bash
-# Copy example env file
-cp .env.example .env
+Create a `.env` file in the root directory with the following variables:
 
-# Edit .env and add your API keys
+```bash
+# Create .env file
 nano .env  # or use your preferred editor
 ```
 
@@ -97,6 +96,7 @@ nano .env  # or use your preferred editor
 OPENAI_API_KEY=sk-your-key-here
 MONGO_URL=mongodb://localhost:27017/nivesh_copilot
 AI_SERVICE_URL=http://localhost:8000
+QDRANT_URL=http://localhost:6333
 ```
 
 ### 3. Install Dependencies
