@@ -1,0 +1,167 @@
+# =============================================================================
+#                     NIVESH COPILOT AI SERVICE - REQUIREMENTS
+# =============================================================================
+#
+# 📚 HOW TO INSTALL:
+# -----------------
+#     cd /path/to/AI
+#     pip install -r requirements.txt
+#
+# 📌 WHAT IS requirements.txt?
+# ---------------------------
+# This file lists all Python packages (libraries) our project needs.
+# pip reads this file and installs everything.
+#
+# Format: package_name>=minimum_version
+#   - >= means "at least this version"
+#   - == means "exactly this version"
+#
+# =============================================================================
+
+# =============================================================================
+#                     FASTAPI & SERVER
+# =============================================================================
+
+fastapi>=0.115.5
+# 📖 FastAPI - The web framework for building our API
+# From: https://fastapi.tiangolo.com/
+# Why: Creates HTTP endpoints that Frontend/Backend can call
+# Used in: main.py - to create our API server
+
+uvicorn>=0.32.1
+# 📖 Uvicorn - ASGI server that runs FastAPI
+# From: https://www.uvicorn.org/
+# Why: FastAPI is just code, uvicorn actually serves it
+# Used in: main.py - uvicorn.run(app, ...)
+# Think of it as: FastAPI = recipe, Uvicorn = the chef
+
+python-dotenv>=1.0.1
+# 📖 Python-dotenv - Loads environment variables from .env file
+# From: https://pypi.org/project/python-dotenv/
+# Why: Store sensitive data (API keys) in .env, not in code
+# Used in: main.py - load_dotenv()
+
+python-multipart>=0.0.9
+# 📖 Python-multipart - Handles file uploads in FastAPI
+# From: https://github.com/andrew-d/python-multipart
+# Why: Needed for UploadFile to work (audio file uploads for STT)
+# Used in: tools_service.py
+
+# =============================================================================
+#                     OPENAI
+# =============================================================================
+
+openai>=1.60.2
+# 📖 OpenAI - Official Python client for OpenAI API
+# From: https://github.com/openai/openai-python
+# Why: Call GPT models (chat), Whisper (speech-to-text), embeddings
+# Used in: All services - client = OpenAI()
+
+# =============================================================================
+#                     LANGCHAIN (for LangGraph Stock Research)
+# =============================================================================
+
+langchain>=0.2.0
+# 📖 LangChain - Framework for LLM applications
+# From: https://python.langchain.com/
+# Why: Provides abstractions for building AI workflows
+# Used in: stock_graph.py - LangGraph workflows
+
+langchain-openai>=0.3.6,<1.0.0
+# 📖 LangChain-OpenAI - LangChain integration with OpenAI
+# From: https://python.langchain.com/
+# Why: Provides OpenAIEmbeddings and ChatOpenAI
+# Used in: stock_graph.py, agent_service.py
+
+langchain-text-splitters>=0.3.0,<1.0.0
+# 📖 LangChain Text Splitters - For chunking documents
+# From: LangChain package
+# Why: Split long documents into smaller chunks if needed
+
+langgraph>=0.2.0
+# 📖 LangGraph - Stateful AI workflows
+# From: https://python.langchain.com/docs/langgraph
+# Why: Build the 7-node stock research workflow
+# Used in: stock_graph.py - StateGraph, Node functions
+
+# =============================================================================
+#                     HTTP REQUESTS & SEARCH
+# =============================================================================
+
+requests>=2.32.0
+# 📖 Requests - HTTP library for Python
+# From: https://requests.readthedocs.io/
+# Why: Make HTTP requests (web search, external APIs)
+# Used in: agent_service.py, tools_service.py
+
+exa_py>=2.0.1
+# 📖 Exa.ai - AI-powered semantic search engine
+# From: https://docs.exa.ai/
+# Why: Secondary search engine with semantic understanding
+# Used in: tools_service.py - exa_search()
+# 📌 Better for research-heavy queries, understands intent
+# Set EXA_API_KEY in .env file
+
+yfinance>=0.2.28
+# 📖 Yahoo Finance - Unofficial API for stock data
+# From: https://github.com/ranaroussi/yfinance
+# Why: Get structured stock prices, market data, financials
+# Used in: tools_service.py - get_stock_price_yahoo()
+# 📌 Provides: Current price, volume, market cap, P/E ratio, etc.
+# ⚠️ Unofficial API - may have rate limits, but widely used
+
+# =============================================================================
+#                     DATABASE (Optional - for persistent memory)
+# =============================================================================
+
+redis>=7.0.1
+# 📖 Redis - Python client for Redis database
+# From: https://github.com/redis/redis-py
+# Why: Store conversation memory persistently (optional)
+# Used in: agent_service.py - for session memory
+
+pymongo>=4.0.0
+# 📖 PyMongo - Official MongoDB driver for Python
+# From: https://pymongo.readthedocs.io/
+# Why: Store conversation checkpoints in MongoDB
+# Used in: agent_service.py - MongoDBCheckpointer class
+
+# =============================================================================
+#                     OCR (IMAGE TO TEXT) - Optional
+# =============================================================================
+
+pytesseract>=0.3.10
+# 📖 Pytesseract - Python wrapper for Tesseract OCR
+# From: https://github.com/madmaze/pytesseract
+# Why: Extract text from images (screenshots, scanned docs)
+# Used in: tools_service.py - pytesseract.image_to_string(...)
+# 📌 Requires Tesseract installed on system:
+#    macOS: brew install tesseract
+#    Ubuntu: sudo apt-get install tesseract-ocr
+
+Pillow>=10.4.0
+# 📖 Pillow (PIL) - Python Imaging Library
+# From: https://pillow.readthedocs.io/
+# Why: Image processing for OCR preprocessing
+# Used in: tools_service.py - Image.open(...), ImageOps, ImageFilter
+
+# =============================================================================
+#                     SUMMARY
+# =============================================================================
+#
+# CORE (Required):
+#   - fastapi, uvicorn: Web server
+#   - openai: AI models (GPT, Whisper)
+#   - python-dotenv: Environment variables
+#   - langchain, langgraph: Stock research workflow
+#
+# STOCK DATA:
+#   - yfinance: Real-time stock prices
+#   - requests, exa_py: Web search for research
+#
+# OPTIONAL:
+#   - redis: Persistent memory
+#   - pymongo: Conversation checkpoints
+#   - pytesseract, Pillow: OCR
+#
+# =============================================================================

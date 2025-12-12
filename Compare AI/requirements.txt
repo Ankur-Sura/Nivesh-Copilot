@@ -1,0 +1,263 @@
+# =============================================================================
+#                     SIGMA GPT AI SERVICE - REQUIREMENTS
+# =============================================================================
+#
+# 📚 HOW TO INSTALL:
+# -----------------
+#     cd /path/to/AI
+#     pip install -r requirements.txt
+#
+# 📌 WHAT IS requirements.txt?
+# ---------------------------
+# This file lists all Python packages (libraries) our project needs.
+# pip reads this file and installs everything.
+#
+# Format: package_name>=minimum_version
+#   - >= means "at least this version"
+#   - == means "exactly this version"
+#
+# =============================================================================
+
+# =============================================================================
+#                     FASTAPI & SERVER
+# =============================================================================
+
+fastapi>=0.115.5
+# 📖 FastAPI - The web framework for building our API
+# From: https://fastapi.tiangolo.com/
+# Why: Creates HTTP endpoints that Frontend/Backend can call
+# Used in: main.py - to create our API server
+
+uvicorn>=0.32.1
+# 📖 Uvicorn - ASGI server that runs FastAPI
+# From: https://www.uvicorn.org/
+# Why: FastAPI is just code, uvicorn actually serves it
+# Used in: main.py - uvicorn.run(app, ...)
+# Think of it as: FastAPI = recipe, Uvicorn = the chef
+
+python-dotenv>=1.0.1
+# 📖 Python-dotenv - Loads environment variables from .env file
+# From: https://pypi.org/project/python-dotenv/
+# Why: Store sensitive data (API keys) in .env, not in code
+# Used in: main.py - load_dotenv()
+# 🔗 Your notes used this in every file!
+
+python-multipart>=0.0.9
+# 📖 Python-multipart - Handles file uploads in FastAPI
+# From: https://github.com/andrew-d/python-multipart
+# Why: Needed for UploadFile to work (PDF, audio, image uploads)
+# Used in: rag_service.py, tools_service.py
+
+# =============================================================================
+#                     OPENAI
+# =============================================================================
+
+openai>=1.60.2
+# 📖 OpenAI - Official Python client for OpenAI API
+# From: https://github.com/openai/openai-python
+# Why: Call GPT models (chat), Whisper (speech-to-text), embeddings
+# Used in: All services - client = OpenAI()
+# 🔗 Your notes: client.chat.completions.create(...)
+
+# =============================================================================
+#                     LANGCHAIN
+# =============================================================================
+
+langchain-openai>=0.3.6,<1.0.0
+# 📖 LangChain-OpenAI - LangChain integration with OpenAI
+# From: https://python.langchain.com/
+# Why: Provides OpenAIEmbeddings for vector embeddings
+# Used in: rag_service.py - embedding_model = OpenAIEmbeddings(...)
+# 🔗 Your notes (04-RAG/indexing.py): embedding_model = OpenAIEmbeddings(...)
+# 📌 IMPORTANT: Pinned to <1.0.0 for compatibility with langchain-qdrant 0.1.4
+
+langchain-qdrant>=0.1.4,<1.0.0
+# 📖 LangChain-Qdrant - LangChain integration with Qdrant vector DB
+# From: https://python.langchain.com/docs/integrations/vectorstores/qdrant
+# Why: Stores and searches vectors in Qdrant
+# Used in: rag_service.py - QdrantVectorStore.from_documents(...)
+# 🔗 Your notes (04-RAG/indexing.py): QdrantVectorStore.from_documents(...)
+# 🚨 DO NOT CHANGE: MUST stay <1.0.0 - versions 1.x break compatibility with existing Qdrant data!
+# This constraint works with langchain>=0.3.0,<0.4.0 (see langchain constraint below)
+
+langchain-text-splitters>=0.3.0,<1.0.0
+# 📖 LangChain Text Splitters - For chunking documents
+# From: LangChain package
+# Why: Split long documents into smaller chunks for embedding
+# Used in: rag_service.py - RecursiveCharacterTextSplitter(...)
+# 🔗 Your notes (04-RAG/indexing.py): RecursiveCharacterTextSplitter(...)
+
+langchain>=0.3.0,<0.4.0
+# 📖 LangChain - Core LangChain package
+# From: https://python.langchain.com/
+# Why: Required by stock_graph.py for langchain.globals.set_debug() and set_verbose()
+# Used in: stock_graph.py - from langchain.globals import set_debug, set_verbose
+# 
+# ═══════════════════════════════════════════════════════════════════════════
+# 🚨 CRITICAL: DO NOT CHANGE THIS CONSTRAINT - IT WILL BREAK DEPLOYMENTS! 🚨
+# ═══════════════════════════════════════════════════════════════════════════
+# 
+# ❌ WRONG: langchain>=0.3.0,<1.0.0 (allows 0.4.x which breaks compatibility)
+# ✅ CORRECT: langchain>=0.3.0,<0.4.0 (only allows 0.3.x which is compatible)
+# 
+# WHY THIS CONSTRAINT IS REQUIRED:
+# 1. langchain-qdrant>=0.1.4,<1.0.0 only works with langchain 0.3.x
+# 2. langchain 0.4+ requires langchain-qdrant 1.x
+# 3. langchain-qdrant 1.x breaks compatibility with existing Qdrant data
+# 4. This creates an impossible dependency conflict if you use <1.0.0
+# 
+# IF YOU SEE "Agent Review" SUGGESTING TO CHANGE THIS:
+# → IGNORE IT - The suggestion is WRONG and will break your deployment!
+# → DO NOT click "Fix All Issues" - it will break your code!
+# → This constraint is INTENTIONAL and CORRECT as-is!
+# 
+# ═══════════════════════════════════════════════════════════════════════════
+
+langgraph>=0.2.0,<1.0.0
+# 📖 LangGraph - Build stateful, multi-actor applications with LLMs
+# From: https://langchain-ai.github.io/langgraph/
+# Why: Required by stock_graph.py for building agent workflows
+# Used in: stock_graph.py - from langgraph.graph import StateGraph, START, END
+
+langgraph-checkpoint-mongodb>=0.1.0,<1.0.0
+# 📖 LangGraph Checkpoint MongoDB - MongoDB checkpoint saver for LangGraph
+# From: https://pypi.org/project/langgraph-checkpoint-mongodb/
+# Why: Required by solo_trip_graph.py and agent_service.py for MongoDB checkpoints
+# Used in: solo_trip_graph.py - from langgraph.checkpoint.mongodb import MongoDBSaver
+# Used in: agent_service.py - from langgraph.checkpoint.mongodb import MongoDBSaver
+
+# =============================================================================
+#                     VECTOR DATABASE
+# =============================================================================
+
+qdrant-client>=1.10.1
+# 📖 Qdrant Client - Python client for Qdrant vector database
+# From: https://github.com/qdrant/qdrant-client
+# Why: Communicate with Qdrant server for vector storage/search
+# Used in: rag_service.py - for filtering queries
+# 🔗 Your notes used Qdrant at http://localhost:6333
+
+# =============================================================================
+#                     PDF PROCESSING
+# =============================================================================
+
+pypdf>=5.1.0
+# 📖 PyPDF - Pure Python PDF library
+# From: https://github.com/py-pdf/pypdf
+# Why: Extract text from PDF files
+# Used in: rag_service.py - PdfReader(BytesIO(content))
+# 🔗 Your notes used PyPDFLoader (same concept, different wrapper)
+
+# =============================================================================
+#                     HTTP REQUESTS & SEARCH
+# =============================================================================
+
+requests>=2.32.0
+# 📖 Requests - HTTP library for Python
+# From: https://requests.readthedocs.io/
+# Why: Make HTTP requests (web search, external APIs)
+# Used in: agent_service.py - requests.get(search_url)
+# 🔗 Your notes (03-Agents/main.py): requests.get(weather_url)
+
+exa_py>=2.0.1
+# 📖 Exa.ai - AI-powered semantic search engine
+# From: https://docs.exa.ai/
+# Why: Secondary search engine with semantic understanding
+# Used in: tools_service.py - exa_search()
+# 📌 Better for research-heavy queries, understands intent
+# Set EXA_API_KEY in .env file
+
+tavily-python>=0.3.0
+# 📖 Tavily - AI-optimized search engine for AI agents
+# From: https://github.com/tavily/tavily-python
+# Why: Primary search engine built specifically for AI agents
+# Used in: tools_service.py - tavily_search()
+# 📌 Returns clean, structured results (like ChatGPT's Bing)
+# Set TAVILY_API_KEY in .env file
+# 🔗 FREE: 1,000 searches/month on free tier
+
+duckduckgo-search>=4.1.0
+# 📖 DuckDuckGo Search - Privacy-focused search engine
+# From: https://github.com/deedy5/duckduckgo_search
+# Why: Tertiary fallback when Tavily and Exa fail
+# Used in: tools_service.py - duckduckgo_search()
+# 📌 No API key required, unlimited free searches
+
+# =============================================================================
+#                     REDIS (Optional - for persistent memory)
+# =============================================================================
+
+redis>=7.0.1
+# 📖 Redis - Python client for Redis database
+# From: https://github.com/redis/redis-py
+# Why: Store conversation memory persistently + Message queue for async RAG
+# Used in: agent_service.py - for session memory
+# Used in: rag_service.py - for async PDF processing queue
+# 🔗 Your notes (advanced_rag/queue/connection.py): from redis import Redis
+
+rq>=1.15.1
+# 📖 RQ (Redis Queue) - Simple job queue for Python
+# From: https://python-rq.org/
+# Why: Async PDF processing - queue jobs, process in background
+# Used in: rag_service.py - for async RAG with Valkey/Redis message queue
+# 🔗 Your Notes Compare pattern: Queue(connection=Redis()) for async tasks
+
+pymongo>=4.0.0
+# 📖 PyMongo - Official MongoDB driver for Python
+# From: https://pymongo.readthedocs.io/
+# Why: Store LangGraph checkpoints (conversation state) in MongoDB
+# Used in: agent_service.py - MongoDBCheckpointer class
+# 🔗 Your notes (07-LangGraph/graph.py): 
+#     from langgraph.checkpoint.mongodb import MongoDBSaver
+#     with MongoDBSaver.from_conn_string(DB_URI) as mongo_checkpointer:
+# 📌 We implement the same checkpointing pattern using pymongo directly!
+
+# =============================================================================
+#                     OCR (IMAGE TO TEXT)
+# =============================================================================
+
+# 🆕 Using OCR.space API instead of EasyOCR (much faster, no heavy models)
+# EasyOCR removed because it's too slow on Render free tier (200MB+ models)
+
+pytesseract>=0.3.10
+# 📖 Pytesseract - Python wrapper for Tesseract OCR (local fallback)
+# From: https://github.com/madmaze/pytesseract
+# Why: Fallback OCR if available locally
+# 📌 Requires Tesseract on system (won't work on Render free tier)
+
+pdf2image>=1.17.0
+# 📖 PDF2Image - Convert PDF pages to images
+# From: https://github.com/Belval/pdf2image
+# Why: OCR for scanned PDFs (convert page to image, then OCR)
+# 📌 Requires Poppler installed on system
+
+Pillow>=10.4.0
+# 📖 Pillow (PIL) - Python Imaging Library
+# From: https://pillow.readthedocs.io/
+# Why: Image processing for OCR preprocessing
+# Used in: tools_service.py - Image.open(...), ImageOps, ImageFilter
+# 📌 This is a MUST for any image processing in Python
+
+
+# =============================================================================
+#                     SUMMARY
+# =============================================================================
+#
+# CORE (Required):
+#   - fastapi, uvicorn: Web server
+#   - openai: AI models (GPT, Whisper)
+#   - python-dotenv: Environment variables
+#
+# RAG (For PDF Q&A):
+#   - langchain-openai: Embeddings
+#   - langchain-qdrant: Vector storage
+#   - langchain-text-splitters: Chunking
+#   - qdrant-client: Vector DB client
+#   - pypdf: PDF reading
+#
+# TOOLS (Optional but useful):
+#   - requests: HTTP calls
+#   - redis: Persistent memory
+#   - pytesseract, pdf2image, Pillow: OCR
+#
+# =============================================================================
