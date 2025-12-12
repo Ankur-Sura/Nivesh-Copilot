@@ -2,10 +2,12 @@
 .env
 .env.local
 .env.*.local
+.env.backup
 # Pattern: Use specific patterns instead of *.env to avoid matching .env.example
 # BAD: *.env (matches .env.example too!)
 # GOOD: Use specific patterns + exception
 *.env
+*.backup
 # Exception: .env.example should be committed as a template
 !.env.example
 
