@@ -88,6 +88,10 @@ docs/
 interviews/
 Interview/
 
+# Local development scripts (not needed in repo)
+start.sh
+stop.sh
+
 # Build outputs
 dist/
 build/
